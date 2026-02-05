@@ -103,4 +103,4 @@ metric:
     metric_aggregation_params:
       semantic_model: listings_latest
       agg: sum
-  filter: "{{ Metric('bookings', group_by=['listing', 'metric_time']) }} > 2"
+  filter: "{{ Metric('bookings', group_by=['listing', 'metric_time__day']) }} > 2"

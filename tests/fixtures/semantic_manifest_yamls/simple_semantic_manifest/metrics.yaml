@@ -558,7 +558,7 @@ metric:
   type_params:
     measure:
       name: listings
-  filter: "{{ Metric('bookings', group_by=['listing', 'metric_time']) }} > 2"
+  filter: "{{ Metric('bookings', group_by=['listing', 'metric_time__day']) }} > 2"
 ---
 metric:
   name: monthly_bookings
