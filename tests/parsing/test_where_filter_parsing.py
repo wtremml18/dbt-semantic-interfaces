@@ -296,7 +296,25 @@ def test_metric_group_by_parses_entity_links_and_granularity() -> None:  # noqa
         metric_reference=MetricReference(element_name="metric"),
     )
 
+def test_metric_group_by_requires_metric_time_grain() -> None:  # noqa
+    where = "{{ Metric('metric', group_by=['listing', 'metric_time__day']) }} = 10"
+    param_sets = JinjaObjectParser.parse_call_parameter_sets(
+        where, custom_granularity_names=(), query_item_location=QueryItemLocation.NON_ORDER_BY
+    )
+    assert len(param_sets.metric_call_parameter_sets) == 1
+    assert param_sets.metric_call_parameter_sets[0] == MetricCallParameterSet(
+        group_by=(
+            GroupByItemReference(element_name="listing"),
+            GroupByItemReference(element_name="metric_time", time_granularity_name="day"),
+        ),
+        metric_reference=MetricReference(element_name="metric"),
+    )
 
+    where_without_grain = "{{ Metric('metric', group_by=['listing', 'metric_time']) }} = 10"
+    with pytest.raises(ParseJinjaObjectException, match="explicit grain"):
+        JinjaObjectParser.parse_call_parameter_sets(
+            where_without_grain, custom_granularity_names=(), query_item_location=QueryItemLocation.NON_ORDER_BY
+        )
 def test_order_by_params() -> None:  # noqa
     input_str = "{{ Metric('metric').descending(True) }} = 10"
     param_sets = JinjaObjectParser.parse_call_parameter_sets(
