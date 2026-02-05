@@ -27,7 +27,7 @@ saved_query:
     group_by:
       - TimeDimension('metric_time', 'day')
     where:
-      - "{{ Metric('bookings', group_by=['listing', 'metric_time']) }} > 5"
+      - "{{ Metric('bookings', group_by=['listing', 'metric_time__day']) }} > 5"
     order_by:
       - Metric('listings').descending(True)
       - TimeDimension('metric_time', 'day')
